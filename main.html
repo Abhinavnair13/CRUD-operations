@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CRUD App</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM"
+      crossorigin="anonymous"
+    />
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Courses</a>
+        <button
+          class="navbar-toggler"
+          type="button"
+          data-bs-toggle="collapse"
+          data-bs-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
+        >
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="parentUl">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a
+                class="nav-link dropdown-toggle"
+                href="#"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                Dropdown
+              </a>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item" href="#">Something else here</a>
+                </li>
+              </ul>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link disabled">Disabled</a>
+            </li>
+          </ul>
+          <form class="d-flex" role="search">
+            <input
+              class="form-control me-2"
+              type="search"
+              placeholder="Search"
+              aria-label="Search"
+            />
+            <button class="btn btn-outline-success" type="submit">
+              Search
+            </button>
+          </form>
+        </div>
+      </div>
+    </nav>
+    <main>
+      <div class="container mt-5 col-6">
+        <div class="input-group mb-3">
+          <input
+            type="text"
+            class="form-control"
+            placeholder="Chapter Name"
+            aria-label="Chapter Name"
+            aria-describedby="basic-addon2"
+          />
+          <button type="button" id="add-btn" class="btn btn-outline-success">
+            Add
+          </button>
+        </div>
+        <ul id="chapterList" class="list-group">
+          <li class="list-group-item d-flex justify-content-between">
+            <h3 class="flex-grow-1">Chapter 1</h3>
+            <button
+              type="button"
+              id="add-btn"
+              class="btn btn-outline-warning mx-2"
+              onclick="editElement(this)"
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              id="add-btn"
+              class="btn btn-outline-danger mx-2"
+              onclick="removeElement(this)"
+            >
+              Remove
+            </button>
+          </li>
+        </ul>
+      </div>
+    </main>
+    <script>
+      let parentUl = document.getElementById("chapterList");
+
+      //add functinality
+      let addButton = document.getElementById("add-btn");
+      addButton.addEventListener("click", addChapter);
+      function addChapter(e) {
+        let buttonEvent = e.target;
+        let textEvent = buttonEvent.previousElementSibling;
+        let currentChapterName = textEvent.value;
+
+        let newLi = document.createElement("li");
+        newLi.innerHTML = `<h3 class="flex-grow-1">${currentChapterName}</h3>
+            <button
+              type="button"
+              id="add-btn"
+              class="btn btn-outline-warning mx-2"
+            >
+              Edit
+            </button>
+            <button
+              type="button"
+              id="add-btn"
+              class="btn btn-outline-danger mx-2"
+              onclick="removeElement(this)"
+            >
+              Remove
+            </button>`;
+        newLi.className = "list-group-item d-flex justify-content-between";
+
+        let chapterList = document.getElementById("chapterList");
+        chapterList.appendChild(newLi);
+
+        if (parentUl.children.length > 0) {
+          document.getElementById("newEmptyMessage").remove();
+        }
+      }
+
+      //remove functionality
+      function removeElement(current_Element) {
+        let parent_Element = current_Element.parentElement;
+        parent_Element.remove();
+
+        //Functionality if list is empty
+
+        if (parentUl.children.length === 0) {
+          console.log("list mpty");
+          let newEmptyMessage = document.createElement("h3");
+          newEmptyMessage.setAttribute("id", "newEmptyMessage");
+          newEmptyMessage.className =
+            "p-3 mb-2 bg-info-subtle text-emphasis-info border border-dark text-center";
+          newEmptyMessage.textContent = "The list looks kinda Empty";
+          parentUl.append(newEmptyMessage);
+        } else if (parentUl.children.length > 0) {
+          document.getElementById("newEmptyMessage").remove();
+        }
+      }
+      //edit functionality
+      function editElement(current_Element) {
+        let currentElementParentElement = current_Element.parentElement;
+        if (current_Element.textContent == "done") {
+          current_Element.classList.replace(
+            "btn-outline-success",
+            "btn-outline-warning"
+          );
+          current_Element.textContent = "edit";
+          let newh3Element = document.createElement("h3");
+          newh3Element.className = "flex-grow-1";
+          newh3Element.textContent =
+            current_Element.previousElementSibling.value;
+          currentElementParentElement.replaceChild(
+            newh3Element,
+            current_Element.previousElementSibling
+          );
+        } else {
+          let h3Element = current_Element.previousElementSibling;
+          let currentTextInput = document.createElement("input");
+          currentTextInput.type = "text";
+          currentTextInput.className = "form-control";
+
+          currentTextInput.value = h3Element.textContent;
+          currentElementParentElement.replaceChild(currentTextInput, h3Element);
+          current_Element.textContent = "done";
+          current_Element.classList.replace(
+            "btn-outline-warning",
+            "btn-outline-success"
+          );
+        }
+      }
+    </script>
+  </body>
+</html>
